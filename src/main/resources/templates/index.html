@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">🏥 Bệnh Viện</a>
+        <div class="ms-auto">
+            <span class="text-white me-3">
+                Xin chào, <strong sec:authentication="name"></strong>
+            </span>
+            <a href="/logout" class="btn btn-outline-light btn-sm">Đăng xuất</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Nội dung -->
+<div class="container mt-4">
+    <h5>Chọn chức năng:</h5>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a href="/patients" class="btn btn-success w-100 py-3">👤 Quản lý Bệnh nhân</a>
+        </div>
+        <div class="col-md-4">
+            <a href="/doctors" class="btn btn-info w-100 py-3">🩺 Quản lý Bác sĩ</a>
+        </div>
+        <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+            <a href="/admin/users" class="btn btn-danger w-100 py-3">🔑 Quản lý Tài khoản</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
