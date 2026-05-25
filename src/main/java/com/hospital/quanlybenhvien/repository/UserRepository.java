@@ -1,49 +1,101 @@
 package com.hospital.quanlybenhvien.repository;
 
 import com.hospital.quanlybenhvien.model.User;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class UserRepository {
 
-    // JdbcTemplate là công cụ Spring giúp chạy SQL dễ hơn
-    private final JdbcTemplate jdbcTemplate;
+    private final DataSource dataSource;
 
-    public UserRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    // Lấy tất cả users
-    public List<User> findAll() {
-        String sql = "SELECT * FROM users";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            User user = new User();
-            user.setId(rs.getInt("id"));
-            user.setUsername(rs.getString("username"));
-            user.setPassword(rs.getString("password"));
-            user.setFullName(rs.getString("full_name"));
-            user.setRole(rs.getString("role"));
-            user.setEnabled(rs.getBoolean("enabled"));
-            return user;
-        });
+    private User mapRow(ResultSet rs) throws SQLException {
+        User u = new User();
+        u.setId(rs.getInt("id"));
+        u.setUsername(rs.getString("username"));
+        u.setPassword(rs.getString("password"));
+        u.setFullName(rs.getString("full_name"));
+        u.setRole(rs.getString("role"));
+        u.setEnabled(rs.getBoolean("enabled"));
+        return u;
     }
 
-    // Tìm user theo username (dùng cho đăng nhập)
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
-        List<User> list = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            User user = new User();
-            user.setId(rs.getInt("id"));
-            user.setUsername(rs.getString("username"));
-            user.setPassword(rs.getString("password"));
-            user.setFullName(rs.getString("full_name"));
-            user.setRole(rs.getString("role"));
-            user.setEnabled(rs.getBoolean("enabled"));
-            return user;
-        }, username);
-        return list.isEmpty() ? null : list.get(0);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return mapRow(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<User> findAll() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM users ORDER BY id";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public void save(User u) {
+        String sql = "INSERT INTO users (username, password, full_name, role, enabled) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, u.getUsername());
+            ps.setString(2, u.getPassword());
+            ps.setString(3, u.getFullName());
+            ps.setString(4, u.getRole());
+            ps.setBoolean(5, u.isEnabled());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public long count() {
+        String sql = "SELECT COUNT(*) FROM users";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) return rs.getLong(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

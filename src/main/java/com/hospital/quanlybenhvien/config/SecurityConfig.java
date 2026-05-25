@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,19 +25,17 @@ public class SecurityConfig {
         this.userRepository = userRepository;
     }
 
-    // Mã hóa mật khẩu bằng BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Load user từ database khi đăng nhập
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             User user = userRepository.findByUsername(username);
             if (user == null) {
-                throw new UsernameNotFoundException("Không tìm thấy tài khoản: " + username);
+                throw new UsernameNotFoundException("Không tìm thấy: " + username);
             }
             return new org.springframework.security.core.userdetails.User(
                     user.getUsername(),
@@ -48,26 +47,39 @@ public class SecurityConfig {
         };
     }
 
-    // Cấu hình quyền truy cập các trang
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Tắt CSRF cho đơn giản (project học tập)
+                .csrf(csrf -> csrf.disable())
+
+                // Phân quyền truy cập
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        // Cho phép truy cập trang login không cần đăng nhập
+                        .requestMatchers("/login").permitAll()
+                        // Trang admin chỉ ADMIN mới vào được
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        // Tất cả trang khác phải đăng nhập
                         .anyRequest().authenticated()
                 )
+
+                // Cấu hình trang đăng nhập
                 .formLogin(form -> form
-                        .loginPage("/login")          // trang login tự tạo
-                        .defaultSuccessUrl("/", true)  // sau login → về trang chủ
-                        .failureUrl("/login?error")    // sai mật khẩu → báo lỗi
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
+
+                // Cấu hình đăng xuất
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)   // xóa session
+                        .deleteCookies("JSESSIONID")   // xóa cookie
                         .permitAll()
                 );
+
         return http.build();
     }
 }

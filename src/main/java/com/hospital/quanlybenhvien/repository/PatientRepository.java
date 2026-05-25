@@ -1,22 +1,25 @@
 package com.hospital.quanlybenhvien.repository;
 
 import com.hospital.quanlybenhvien.model.Patient;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class PatientRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    // DataSource = nguồn cung cấp kết nối đến MySQL
+    private final DataSource dataSource;
 
-    public PatientRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PatientRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    // Map ResultSet → Patient
-    private Patient mapRow(java.sql.ResultSet rs, int rowNum) throws java.sql.SQLException {
+    // Hàm dùng chung để map ResultSet → Patient
+    private Patient mapRow(ResultSet rs) throws SQLException {
         Patient p = new Patient();
         p.setId(rs.getInt("id"));
         p.setFullName(rs.getString("full_name"));
@@ -29,45 +32,141 @@ public class PatientRepository {
         return p;
     }
 
+    // Lấy tất cả bệnh nhân
     public List<Patient> findAll() {
+        List<Patient> list = new ArrayList<>();
         String sql = "SELECT * FROM patients ORDER BY created_at DESC";
-        return jdbcTemplate.query(sql, this::mapRow);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    // Tìm bệnh nhân theo id
     public Patient findById(int id) {
         String sql = "SELECT * FROM patients WHERE id = ?";
-        List<Patient> list = jdbcTemplate.query(sql, this::mapRow, id);
-        return list.isEmpty() ? null : list.get(0);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id); // ? đầu tiên = id
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return mapRow(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
+    // Tìm kiếm theo tên hoặc số điện thoại
     public List<Patient> search(String keyword) {
+        List<Patient> list = new ArrayList<>();
         String sql = "SELECT * FROM patients WHERE full_name LIKE ? OR phone LIKE ?";
-        String kw = "%" + keyword + "%";
-        return jdbcTemplate.query(sql, this::mapRow, kw, kw);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            String kw = "%" + keyword + "%";
+            ps.setString(1, kw); // ? đầu tiên = tìm theo tên
+            ps.setString(2, kw); // ? thứ hai  = tìm theo số điện thoại
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
+    // Thêm bệnh nhân mới
     public void save(Patient p) {
-        String sql = "INSERT INTO patients (full_name, date_of_birth, gender, phone, address, diagnosis) VALUES (?, ?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                p.getFullName(), p.getDateOfBirth(), p.getGender(),
-                p.getPhone(), p.getAddress(), p.getDiagnosis());
+        String sql = "INSERT INTO patients (full_name, date_of_birth, gender, phone, address, diagnosis) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, p.getFullName());
+            ps.setString(2, p.getDateOfBirth());
+            ps.setString(3, p.getGender());
+            ps.setString(4, p.getPhone());
+            ps.setString(5, p.getAddress());
+            ps.setString(6, p.getDiagnosis());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    // Cập nhật thông tin bệnh nhân
     public void update(Patient p) {
-        String sql = "UPDATE patients SET full_name=?, date_of_birth=?, gender=?, phone=?, address=?, diagnosis=? WHERE id=?";
-        jdbcTemplate.update(sql,
-                p.getFullName(), p.getDateOfBirth(), p.getGender(),
-                p.getPhone(), p.getAddress(), p.getDiagnosis(), p.getId());
+        String sql = "UPDATE patients SET full_name=?, date_of_birth=?, gender=?, " +
+                "phone=?, address=?, diagnosis=? WHERE id=?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, p.getFullName());
+            ps.setString(2, p.getDateOfBirth());
+            ps.setString(3, p.getGender());
+            ps.setString(4, p.getPhone());
+            ps.setString(5, p.getAddress());
+            ps.setString(6, p.getDiagnosis());
+            ps.setInt(7, p.getId());    // WHERE id = ?
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    // Xóa bệnh nhân
     public void delete(int id) {
         String sql = "DELETE FROM patients WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public long count() {
+    // Đếm tổng số bệnh nhân
+    public int count() {
         String sql = "SELECT COUNT(*) FROM patients";
-        Long result = jdbcTemplate.queryForObject(sql, Long.class);
-        return result != null ? result : 0;
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
