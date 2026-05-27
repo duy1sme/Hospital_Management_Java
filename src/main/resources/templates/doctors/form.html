@@ -1,124 +1,75 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Thêm/Sửa Bác sĩ</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 30px;
-        }
-
-        .container {
-            width: 500px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-        }
-
-        h2 {
-            margin-top: 0;
-            color: #2c3e50;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        
-        input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
-        .form-actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        button, .btn {
-            padding: 10px 20px;
-            border: none;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-save {
-            background: #27ae60;
-        }
-
-        .btn-cancel {
-            background: #95a5a6;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
-
 <body>
 
-<div class="container">
+<nav class="navbar navbar-dark bg-info px-3">
+    <a class="navbar-brand" href="/">🏥 Quản Lý Bệnh Viện</a>
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-white">
+            Xin chào, <strong sec:authentication="name"></strong>
+        </span>
+        <form th:action="@{/logout}" method="post" class="m-0">
+            <button class="btn btn-outline-light btn-sm">Đăng xuất</button>
+        </form>
+    </div>
+</nav>
 
-    <h2 th:text="${doctor.id == 0 ? 'Thêm bác sĩ mới' : 'Cập nhật bác sĩ'}"></h2>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0" th:text="${doctor.id == 0 ? 'Thêm bác sĩ mới' : 'Cập nhật bác sĩ'}"></h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${doctor.id == 0 ? '/doctors/add' : '/doctors/edit'}"
+                          th:object="${doctor}" method="post">
 
-    <form th:action="${doctor.id == 0 ? '/doctors/add' : '/doctors/edit'}" th:object="${doctor}" method="post">
-        
-        <!-- Trường ẩn lưu ID nếu là sửa -->
-        <input type="hidden" th:field="*{id}">
+                        <!-- Trường ẩn lưu ID nếu là sửa -->
+                        <input type="hidden" th:field="*{id}">
 
-        <div class="form-group">
-            <label>Họ tên:</label>
-            <input type="text" th:field="*{fullName}" required>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Họ tên:</label>
+                            <input type="text" th:field="*{fullName}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Chuyên khoa:</label>
+                            <input type="text" th:field="*{specialty}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Số điện thoại:</label>
+                            <input type="text" th:field="*{phone}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email:</label>
+                            <input type="email" th:field="*{email}" class="form-control">
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" th:field="*{active}" class="form-check-input" id="activeCheck">
+                            <label class="form-check-label" for="activeCheck">Đang làm việc</label>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a class="btn btn-secondary" th:href="@{/doctors}">⬅ Quay lại</a>
+                            <button type="submit" class="btn btn-info text-white">💾 Lưu thông tin</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="form-group">
-            <label>Chuyên khoa:</label>
-            <input type="text" th:field="*{specialty}" required>
-        </div>
-
-        <div class="form-group">
-            <label>Số điện thoại:</label>
-            <input type="text" th:field="*{phone}" required>
-        </div>
-
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" th:field="*{email}">
-        </div>
-
-        <div class="form-group">
-            <label>
-                <input type="checkbox" th:field="*{active}">
-                Đang làm việc
-            </label>
-        </div>
-
-        <div class="form-actions">
-            <a class="btn btn-cancel" th:href="@{/doctors}">Quay lại</a>
-            <button type="submit" class="btn btn-save">Lưu thông tin</button>
-        </div>
-
-    </form>
-
+    </div>
 </div>
 
 </body>
