@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+// DoctorService.java
+// - Chức năng: Xử lý logic nghiệp vụ liên quan đến bác sĩ
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;

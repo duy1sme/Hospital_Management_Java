@@ -17,6 +17,8 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+// SecurityConfig.java
+// - Chức năng: Cấu hình bảo mật và phân quyền truy cập URL
 public class SecurityConfig {
 
     private final UserRepository userRepository;

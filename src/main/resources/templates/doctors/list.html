@@ -1,87 +1,90 @@
+<!-- 
+  src/main/resources/templates/doctors/list.html
+  - Chức năng: Trang giao diện hệ thống
+-->
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title>Danh sách bác sĩ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
 
-<nav class="navbar navbar-dark bg-info px-3">
-    <a class="navbar-brand" href="/">🏥 Quản Lý Bệnh Viện</a>
-    <div class="d-flex align-items-center gap-3">
-        <span class="text-white">
-            Xin chào, <strong sec:authentication="name"></strong>
-        </span>
-        <form th:action="@{/logout}" method="post" class="m-0">
-            <button class="btn btn-outline-light btn-sm">Đăng xuất</button>
+    <nav class="navbar navbar-dark bg-info px-3">
+        <a class="navbar-brand" href="/">🏥 Quản Lý Bệnh Viện</a>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white">
+                Xin chào, <strong sec:authentication="name"></strong>
+            </span>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button class="btn btn-outline-light btn-sm">Đăng xuất</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>🩺 Danh sách Bác sĩ</h4>
+            <div class="d-flex gap-2">
+                <a href="/" class="btn btn-outline-secondary btn-sm">⬅ Quay lại trang chủ</a>
+                <a th:href="@{/doctors/add}" class="btn btn-info text-white">+ Thêm bác sĩ</a>
+            </div>
+        </div>
+
+        <!-- Tìm kiếm -->
+        <form th:action="@{/doctors}" method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên, SĐT, chuyên khoa"
+                    th:value="${keyword}">
+                <button class="btn btn-info text-white">Tìm kiếm</button>
+                <a href="/doctors" class="btn btn-secondary">Xóa lọc</a>
+            </div>
         </form>
+
+        <!-- Bảng danh sách -->
+        <table class="table table-bordered table-hover">
+            <thead class="table-info">
+                <tr>
+                    <th>ID</th>
+                    <th>Họ tên</th>
+                    <th>Chuyên khoa</th>
+                    <th>Số điện thoại</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="d : ${doctors}">
+                    <td th:text="${d.id}"></td>
+                    <td th:text="${d.fullName}"></td>
+                    <td th:text="${d.specialty}"></td>
+                    <td th:text="${d.phone}"></td>
+                    <td th:text="${d.email}"></td>
+                    <td>
+                        <span th:if="${d.active}" class="badge bg-success">Đang làm việc</span>
+                        <span th:unless="${d.active}" class="badge bg-secondary">Nghỉ làm</span>
+                    </td>
+                    <td>
+                        <a class="btn btn-warning btn-sm" th:href="@{/doctors/edit/{id}(id=${d.id})}">Sửa</a>
+                        <a class="btn btn-danger btn-sm" th:href="@{/doctors/delete/{id}(id=${d.id})}"
+                            onclick="return confirm('Bạn có chắc muốn xóa bác sĩ này?')">
+                            Xóa
+                        </a>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(doctors)}">
+                    <td colspan="7" class="text-center text-muted">Không có bác sĩ nào</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
-</nav>
-
-<div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>🩺 Danh sách Bác sĩ</h4>
-        <div class="d-flex gap-2">
-            <a href="/" class="btn btn-outline-secondary btn-sm">⬅ Quay lại trang chủ</a>
-            <a th:href="@{/doctors/add}" class="btn btn-info text-white">+ Thêm bác sĩ</a>
-        </div>
-    </div>
-
-    <!-- Tìm kiếm -->
-    <form th:action="@{/doctors}" method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="keyword" class="form-control"
-                   placeholder="Tìm theo tên, SĐT, chuyên khoa"
-                   th:value="${keyword}">
-            <button class="btn btn-info text-white">Tìm kiếm</button>
-            <a href="/doctors" class="btn btn-secondary">Xóa lọc</a>
-        </div>
-    </form>
-
-    <!-- Bảng danh sách -->
-    <table class="table table-bordered table-hover">
-        <thead class="table-info">
-        <tr>
-            <th>ID</th>
-            <th>Họ tên</th>
-            <th>Chuyên khoa</th>
-            <th>Số điện thoại</th>
-            <th>Email</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="d : ${doctors}">
-            <td th:text="${d.id}"></td>
-            <td th:text="${d.fullName}"></td>
-            <td th:text="${d.specialty}"></td>
-            <td th:text="${d.phone}"></td>
-            <td th:text="${d.email}"></td>
-            <td>
-                <span th:if="${d.active}" class="badge bg-success">Đang làm việc</span>
-                <span th:unless="${d.active}" class="badge bg-secondary">Nghỉ làm</span>
-            </td>
-            <td>
-                <a class="btn btn-warning btn-sm" th:href="@{/doctors/edit/{id}(id=${d.id})}">Sửa</a>
-                <a class="btn btn-danger btn-sm"
-                   th:href="@{/doctors/delete/{id}(id=${d.id})}"
-                   onclick="return confirm('Bạn có chắc muốn xóa bác sĩ này?')">
-                    Xóa
-                </a>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(doctors)}">
-            <td colspan="7" class="text-center text-muted">Không có bác sĩ nào</td>
-        </tr>
-        </tbody>
-    </table>
-
-</div>
 
 </body>
+
 </html>

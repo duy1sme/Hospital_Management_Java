@@ -1,18 +1,22 @@
 package com.hospital.quanlybenhvien.model;
 
+// Patient.java
+// - Chức năng: Đại diện cho thông tin bệnh nhân
 public class Patient {
 
-    private int id;
-    private String fullName;
-    private String dateOfBirth;
-    private String gender;
-    private String phone;
-    private String address;
-    private String diagnosis;
-    private String createdAt;
+    private int id;              // Mã số bệnh nhân (Primary Key)
+    private String fullName;     // Họ tên đầy đủ
+    private String dateOfBirth;  // Ngày sinh (định dạng: yyyy-MM-dd)
+    private String gender;       // Giới tính (Nam hoặc Nữ)
+    private String phone;        // Số điện thoại liên hệ
+    private String address;      // Địa chỉ nhà ở
+    private String diagnosis;    // Chẩn đoán bệnh ban đầu
+    private String createdAt;    // Ngày tạo hồ sơ (tự động ghi khi thêm)
 
+    // Constructor không tham số
     public Patient() {}
 
+    // ===== GETTERS VÀ SETTERS =====
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -31,9 +35,9 @@ public class Patient {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
-    public String getDiagnosis() { return diagnosis; }
-    public void setDiagnosis(String diagnosis) { this.diagnosis = diagnosis; }
+    public String getDiagnosis() { return diagnosis; } // Lấy chẩn đoán bệnh ban đầu
+    public void setDiagnosis(String diagnosis) { this.diagnosis = diagnosis; } // Cập nhật chẩn đoán
 
-    public String getCreatedAt() { return createdAt; }
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public String getCreatedAt() { return createdAt; } // Lấy ngày tạo bệnh án
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; } // Cập nhật ngày tạo
 }

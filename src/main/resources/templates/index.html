@@ -1,110 +1,126 @@
+<!-- 
+  src/main/resources/templates/index.html
+  - Chức năng: Trang chủ hiển thị số liệu thống kê tổng quan (Dashboard)
+-->
 <!DOCTYPE html>
-<html lang="vi"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <!-- Bootstrap CSS từ CDN - để styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
 
-<nav class="navbar navbar-dark bg-primary px-3">
-    <span class="navbar-brand">🏥 Quản Lý Bệnh Viện</span>
-    <div class="d-flex align-items-center gap-3">
-        <!-- Hiện tên người đang đăng nhập -->
-        <span class="text-white">
-            Xin chào, <strong sec:authentication="name"></strong>
-        </span>
-        <form th:action="@{/logout}" method="post" class="m-0">
-            <button class="btn btn-outline-light btn-sm">Đăng xuất</button>
-        </form>
+    <!-- ===== NAVBAR (THANH ĐIỀU HƯỚNG) ===== -->
+    <nav class="navbar navbar-dark bg-primary px-3">
+        <!-- Logo/Tiêu đề -->
+        <span class="navbar-brand">🏥 Quản Lý Bệnh Viện</span>
+        <div class="d-flex align-items-center gap-3">
+            <!-- Hiển thị tên người dùng đang đăng nhập -->
+            <!-- sec:authentication="name" - lấy username từ Spring Security -->
+            <span class="text-white">
+                Xin chào, <strong sec:authentication="name"></strong>
+            </span>
+            <!-- Nút Đăng xuất -->
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button class="btn btn-outline-light btn-sm">Đăng xuất</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- ===== NỘI DUNG CHÍNH ===== -->
+    <div class="container mt-4">
+
+        <!-- PHẦN 1: THỐNG KÊ TỔNG QUAN -->
+        <h5 class="mb-3">📊 Tổng quan hệ thống</h5>
+        <div class="row g-3 mb-4">
+
+            <!-- Card: Tổng bệnh nhân -->
+            <div class="col-md-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body text-center">
+                        <div style="font-size:2rem">👤</div>
+                        <!-- th:text="${...}" - Thymeleaf binding để hiển thị dữ liệu từ model -->
+                        <h3 th:text="${totalPatients}">0</h3>
+                        <p class="mb-0">Tổng bệnh nhân</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Tổng bác sĩ -->
+            <div class="col-md-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body text-center">
+                        <div style="font-size:2rem">🩺</div>
+                        <h3 th:text="${totalDoctors}">0</h3>
+                        <p class="mb-0">Tổng bác sĩ</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Bác sĩ đang làm việc -->
+            <div class="col-md-3">
+                <div class="card text-white bg-primary">
+                    <div class="card-body text-center">
+                        <div style="font-size:2rem">✅</div>
+                        <h3 th:text="${activeDoctors}">0</h3>
+                        <p class="mb-0">Bác sĩ đang làm</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Lịch hẹn hôm nay -->
+            <div class="col-md-3">
+                <div class="card text-white bg-warning">
+                    <div class="card-body text-center">
+                        <div style="font-size:2rem">📅</div>
+                        <h3 th:text="${totalAppointments}">0</h3>
+                        <p class="mb-0">Lịch hẹn hôm nay</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- PHẦN 2: MENU CHỨC NĂNG CHÍNH -->
+        <h5 class="mb-3">📋 Chức năng</h5>
+        <div class="row g-3">
+
+            <!-- Nút Quản lý Bệnh nhân (tất cả đều thấy) -->
+            <div class="col-md-3">
+                <a href="/patients" class="btn btn-success w-100 py-3">
+                    👤 Quản lý Bệnh nhân
+                </a>
+            </div>
+
+            <!-- Nút Quản lý Bác sĩ (tất cả đều thấy) -->
+            <div class="col-md-3">
+                <a href="/doctors" class="btn btn-info w-100 py-3 text-white">
+                    🩺 Quản lý Bác sĩ
+                </a>
+            </div>
+
+            <!-- Nút Đặt lịch khám (tất cả đều thấy) -->
+            <div class="col-md-3">
+                <a href="/appointments" class="btn btn-warning w-100 py-3">
+                    📅 Đặt lịch khám
+                </a>
+            </div>
+
+            <!-- Nút Quản lý Tài khoản - CHỈ ADMIN mới thấy -->
+            <!-- sec:authorize="hasRole('ADMIN')" - chỉ hiển thị nếu user có quyền ADMIN -->
+            <div class="col-md-3" sec:authorize="hasRole('ADMIN')">
+                <a href="/admin/users" class="btn btn-danger w-100 py-3">
+                    🔑 Quản lý Tài khoản
+                </a>
+            </div>
+
+        </div>
     </div>
-</nav>
-
-<div class="container mt-4">
-
-    <!-- Thống kê -->
-    <h5 class="mb-3">📊 Tổng quan hệ thống</h5>
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-3">
-            <div class="card text-white bg-success">
-                <div class="card-body text-center">
-                    <div style="font-size:2rem">👤</div>
-                    <h3 th:text="${totalPatients}">0</h3>
-                    <p class="mb-0">Tổng bệnh nhân</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card text-white bg-info">
-                <div class="card-body text-center">
-                    <div style="font-size:2rem">🩺</div>
-                    <h3 th:text="${totalDoctors}">0</h3>
-                    <p class="mb-0">Tổng bác sĩ</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
-                <div class="card-body text-center">
-                    <div style="font-size:2rem">✅</div>
-                    <h3 th:text="${activeDoctors}">0</h3>
-                    <p class="mb-0">Bác sĩ đang làm</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body text-center">
-                    <div style="font-size:2rem">📅</div>
-                    <h3 th:text="${totalAppointments}">0</h3>
-                    <p class="mb-0">Lịch hẹn hôm nay</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Chức năng -->
-    <h5 class="mb-3">📋 Chức năng</h5>
-    <div class="row g-3">
-
-        <!-- Tất cả đều thấy -->
-        <div class="col-md-3">
-            <a href="/patients" class="btn btn-success w-100 py-3">
-                👤 Quản lý Bệnh nhân
-            </a>
-        </div>
-
-        <!-- Tất cả đều thấy -->
-        <div class="col-md-3">
-            <a href="/doctors" class="btn btn-info w-100 py-3 text-white">
-                🩺 Quản lý Bác sĩ
-            </a>
-        </div>
-
-        <!-- Tất cả đều thấy -->
-        <div class="col-md-3">
-            <a href="/appointments" class="btn btn-warning w-100 py-3">
-                📅 Đặt lịch khám
-            </a>
-        </div>
-
-        <!-- CHỈ ADMIN mới thấy nút này -->
-        <div class="col-md-3" sec:authorize="hasRole('ADMIN')">
-            <a href="/admin/users" class="btn btn-danger w-100 py-3">
-                🔑 Quản lý Tài khoản
-            </a>
-        </div>
-
-    </div>
-</div>
 
 </body>
+
 </html>

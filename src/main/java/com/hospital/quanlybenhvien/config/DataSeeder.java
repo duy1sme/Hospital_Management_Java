@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+// DataSeeder.java
+// - Chức năng: Khởi tạo dữ liệu tài khoản mẫu khi chạy lần đầu
 public class DataSeeder implements CommandLineRunner {
 
     private final UserRepository userRepository;
@@ -20,7 +22,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Chỉ tạo nếu chưa có tài khoản nào trong database
-        if (userRepository.findByUsername("admin") == null) {
+        if (userRepository.count() == 0) {
 
             User admin = new User();
             admin.setUsername("admin");

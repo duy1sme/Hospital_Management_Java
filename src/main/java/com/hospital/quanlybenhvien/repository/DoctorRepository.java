@@ -8,15 +8,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// DoctorRepository - Lớp truy cập dữ liệu cho bảng doctors
+// Quản lý tất cả các thao tác với database liên quan đến bác sĩ
 @Repository
+// DoctorRepository.java
+// - Chức năng: Thao tác cơ sở dữ liệu (CRUD) bảng doctors qua JDBC
 public class DoctorRepository {
 
-    private final DataSource dataSource;
+    private final DataSource dataSource; // Kết nối pool đến database
 
     public DoctorRepository(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    // Chuyển đổi dòng ResultSet thành object Doctor
     private Doctor mapRow(ResultSet rs) throws SQLException {
         Doctor d = new Doctor();
         d.setId(rs.getInt("id"));
@@ -28,6 +33,7 @@ public class DoctorRepository {
         return d;
     }
 
+    // Lấy tất cả bác sĩ từ database
     public List<Doctor> findAll() {
         List<Doctor> list = new ArrayList<>();
         String sql = "SELECT * FROM doctors";
@@ -46,6 +52,7 @@ public class DoctorRepository {
         return list;
     }
 
+    // Tìm bác sĩ theo ID
     public Doctor findById(int id) {
         String sql = "SELECT * FROM doctors WHERE id = ?";
 
@@ -65,6 +72,7 @@ public class DoctorRepository {
         return null;
     }
 
+    // Tìm kiếm bác sĩ theo từ khóa (tên, SĐT, chuyên khoa)
     public List<Doctor> search(String keyword) {
         List<Doctor> list = new ArrayList<>();
         String sql = "SELECT * FROM doctors WHERE full_name LIKE ? OR phone LIKE ? OR specialty LIKE ?";
@@ -73,9 +81,9 @@ public class DoctorRepository {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String kw = "%" + keyword + "%";
-            ps.setString(1, kw);
-            ps.setString(2, kw);
-            ps.setString(3, kw);
+            ps.setString(1, kw);  // Tìm trong full_name
+            ps.setString(2, kw);  // Tìm trong phone
+            ps.setString(3, kw);  // Tìm trong specialty
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -88,6 +96,7 @@ public class DoctorRepository {
         return list;
     }
 
+    // Thêm bác sĩ mới
     public void save(Doctor d) {
         String sql = "INSERT INTO doctors (full_name, specialty, phone, email, active) VALUES (?, ?, ?, ?, ?)";
 
@@ -106,6 +115,7 @@ public class DoctorRepository {
         }
     }
 
+    // Cập nhật thông tin bác sĩ
     public void update(Doctor d) {
         String sql = "UPDATE doctors SET full_name=?, specialty=?, phone=?, email=?, active=? WHERE id=?";
 
@@ -125,6 +135,7 @@ public class DoctorRepository {
         }
     }
 
+    // Xóa bác sĩ theo ID
     public void delete(int id) {
         String sql = "DELETE FROM doctors WHERE id = ?";
 
@@ -139,6 +150,7 @@ public class DoctorRepository {
         }
     }
 
+    // Đếm tổng số bác sĩ
     public int count() {
         String sql = "SELECT COUNT(*) FROM doctors";
 
@@ -154,6 +166,8 @@ public class DoctorRepository {
         return 0;
     }
 
+    // Đếm số bác sĩ đang làm việc (active = 1)
+// Dùng cho dashboard để hiển thị thống kê
     public int countActive() {
         String sql = "SELECT COUNT(*) FROM doctors WHERE active = 1";
 
