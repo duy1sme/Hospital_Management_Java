@@ -1,6 +1,6 @@
 # 🏥 Hospital Management — Hệ Thống Quản Lý Bệnh Viện
 
-Chào mừng bạn đến với **Hệ Thống Quản Lý Bệnh Viện (Hospital Management)**. Đây là một ứng dụng web hoàn chỉnh, được xây dựng trên nền tảng **Spring Boot** kết hợp với **Spring JDBC** và giao diện **Thymeleaf & Bootstrap 5** hiện đại. 
+Chào mừng bạn đến với **Hệ Thống Quản Lý Bệnh Viện (Hospital Management)**. Đây là một ứng dụng web hoàn chỉnh, được xây dựng trên nền tảng **Spring Boot** và sử dụng cơ sở dữ liệu MySQL đảm bảo hiệu năng mạnh mẽ cũng như giao diện thân thiện.
 
 Hệ thống được thiết kế tối ưu phục vụ công tác quản lý tài khoản nhân viên, bác sĩ, hồ sơ bệnh nhân, lịch hẹn khám và thống kê tổng quan trong bệnh viện.
 
@@ -121,7 +121,7 @@ Mở Terminal / Git Bash và thực thi câu lệnh sau để tải mã nguồn:
 ```bash
 git clone https://github.com/duy1sme/Hospital_Management_Java.git
 ```
-Sau khi tải xong, hãy mở IntelliJ IDEA, nhấn **Open** và dẫn tới thư mục dự án vừa tải về. Đợi từ 2 đến 3 phút để hệ thống tải toàn bộ thư viện từ Maven.
+Sau khi tải xong, hãy mở IntelliJ IDEA, nhấn **Open** và dẫn tới thư mục dự án vừa tải về. Đợi từ 2 đến 3 phút để hệ thống tải toàn bộ thư viện từ Maven repository.
 
 ### Bước 3 — Tạo Cơ Sở Dữ Liệu MySQL
 Khởi động **MySQL Workbench**, đăng nhập bằng tài khoản admin của bạn và chạy đoạn script SQL dưới đây để tạo cơ sở dữ liệu và 4 bảng liên quan:
@@ -226,43 +226,3 @@ Sử dụng các tài khoản kiểm thử mặc định được tự động g
 * **Lỗi Maven không tải được thư viện**:
   * *Nguyên nhân*: Lỗi mạng hoặc IDE chưa nhận diện đúng Maven.
   * *Cách sửa*: Click chuột phải vào dự án hoặc tệp `pom.xml` -> Chọn **Maven** -> Chọn **Reload Project**.
-
----
-
-## 🤝 Quy Tắc Làm Việc Nhóm Với Git
-
-Để tránh xảy ra xung đột mã nguồn (Conflict), toàn bộ thành viên dự án nên tuân thủ quy trình Git sau:
-
-1. **Đồng bộ nhánh làm việc trước khi làm code mới**:
-   ```bash
-   git checkout main
-   git pull origin main
-   ```
-2. **Tạo nhánh tính năng riêng**:
-   ```bash
-   git checkout -b feature/ten-tinh-nang
-   # Ví dụ: feature/appointments-crud, feature/users-management
-   ```
-3. **Commit và đẩy thay đổi lên GitHub sau khi hoàn thiện**:
-   ```bash
-   git add .
-   git commit -m "feat: mô tả ngắn gọn chức năng vừa làm"
-   git push origin feature/ten-tinh-nang
-   ```
-4. **Tạo Pull Request (PR)** trên GitHub từ nhánh `feature/ten-tinh-nang` vào nhánh `main` để trưởng nhóm phê duyệt và đồng bộ.
-
----
-
-## 👥 Bảng Phân Công Công Việc Nhóm
-
-| Thành Viên | Mã Sinh Viên | Vai Trò & Nhiệm Vụ Phụ Trách |
-| :--- | :--- | :--- |
-| **Nguyễn Văn A** | SV001 | Trưởng nhóm, Thiết lập kiến trúc, Bảo mật & Phân quyền (Spring Security), CRUD Tài khoản |
-| **Nguyễn Văn B** | SV002 | Thiết kế Cơ sở dữ liệu, Lập trình phân hệ CRUD Bệnh nhân, Tìm kiếm bệnh nhân |
-| **Nguyễn Văn C** | SV003 | Lập trình phân hệ CRUD Bác sĩ, Phân loại chuyên khoa & Theo dõi trạng thái |
-| **Nguyễn Văn D** | SV004 | Lập trình phân hệ Đặt lịch & Quản lý Lịch hẹn khám bệnh (Appointments), Đồng bộ trạng thái |
-| **Nguyễn Văn E** | SV005 | Thiết kế giao diện Thymeleaf + CSS/Bootstrap 5, Thiết lập Dashboard báo cáo số liệu |
-
----
-
-*Chúc các thành viên hoàn thành xuất sắc dự án! Mọi vướng mắc kỹ thuật vui lòng trao đổi trực tiếp trên nhóm chat.*
