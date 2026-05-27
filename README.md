@@ -1,42 +1,140 @@
-# 🏥 Quản Lý Bệnh Viện — Hướng Dẫn Cài Đặt
+# 🏥 Hospital Management — Hệ Thống Quản Lý Bệnh Viện
 
-## Yêu cầu cài đặt trước
+Chào mừng bạn đến với **Hệ Thống Quản Lý Bệnh Viện (Hospital Management)**. Đây là một ứng dụng web hoàn chỉnh, được xây dựng trên nền tảng **Spring Boot** kết hợp với **Spring JDBC** và giao diện **Thymeleaf & Bootstrap 5** hiện đại. 
 
-| Công cụ | Phiên bản | Link tải |
-|---|---|---|
-| Java JDK | 17 trở lên | https://adoptium.net |
-| IntelliJ IDEA | Mới nhất (Community là đủ) | https://www.jetbrains.com/idea |
-| MySQL Server | 8.0 trở lên | https://dev.mysql.com/downloads |
-| MySQL Workbench | Mới nhất | https://dev.mysql.com/downloads/workbench |
-| Git | Mới nhất | https://git-scm.com |
+Hệ thống được thiết kế tối ưu phục vụ công tác quản lý tài khoản nhân viên, bác sĩ, hồ sơ bệnh nhân, lịch hẹn khám và thống kê tổng quan trong bệnh viện.
 
 ---
 
-## Bước 1 — Clone project về máy
+## 🌟 Tính Năng Nổi Bật
 
-Mở terminal (hoặc Git Bash), chạy lệnh:
+Hệ thống sở hữu các phân hệ chức năng toàn diện và được phân quyền chặt chẽ thông qua Spring Security:
 
-```bash
-git clone https://github.com/TEN_NHOM/quanlybenhvien.git
+1. **📊 Dashboard Tổng Quan (Trang Chủ)**
+   * Thống kê thời gian thực số lượng bệnh nhân đang điều trị.
+   * Số lượng bác sĩ thuộc hệ thống.
+   * Số lượng bác sĩ đang trực tiếp làm việc.
+   * Tổng số lịch hẹn đã lên lịch trong ngày hôm nay.
+2. **👤 Quản Lý Bệnh Nhân**
+   * Lưu trữ hồ sơ bệnh nhân: Họ tên, ngày sinh, giới tính, số điện thoại, địa chỉ, chẩn đoán ban đầu.
+   * Hỗ trợ tìm kiếm nhanh theo Họ tên hoặc Số điện thoại.
+   * Đầy đủ chức năng thêm mới, chỉnh sửa thông tin và xóa bệnh nhân.
+3. **🩺 Quản Lý Bác Sĩ**
+   * Theo dõi thông tin bác sĩ: Tên, chuyên khoa, số điện thoại, email.
+   * Quản lý trạng thái hoạt động (Đang làm việc / Nghỉ việc).
+4. **📅 Quản Lý Lịch Hẹn Khám (Đặt Lịch)**
+   * Tạo lịch hẹn khám linh hoạt kết nối giữa Bệnh nhân và Bác sĩ.
+   * Chọn ngày khám, giờ khám và ghi chú triệu chứng cụ thể.
+   * Cập nhật trạng thái lịch hẹn theo quy trình khám bệnh: *Chờ xác nhận*, *Đã xác nhận*, *Hoàn thành*, *Đã hủy*.
+5. **🔑 Phân Quyền & Bảo Mật (Spring Security)**
+   * Xác thực tài khoản đăng nhập/đăng xuất chuyên nghiệp, chống truy cập trái phép.
+   * Phân quyền dựa trên vai trò (Role-based access control):
+     * **Quản Trị Viên (Admin)**: Toàn quyền truy cập tất cả chức năng, bao gồm quản lý tài khoản hệ thống (`users`).
+     * **Bác Sĩ (Doctor)**: Quản lý bệnh nhân, bác sĩ, đặt lịch khám nhưng bị giới hạn truy cập phân hệ Quản lý tài khoản.
+6. **🌱 Tự Động Gieo Dữ Liệu (Data Seeding)**
+   * Tự động khởi tạo 2 tài khoản mặc định (Admin và Bác sĩ mẫu) ngay lần đầu khởi chạy nếu hệ thống chưa có dữ liệu, giúp dễ dàng kiểm thử.
+
+---
+
+## 🛠️ Công Nghệ Sử Dụng
+
+| Thành Phần | Công Nghệ / Thư Viện | Mô Tả |
+| :--- | :--- | :--- |
+| **Ngôn ngữ** | Java 17 | Đảm bảo hiệu năng mạnh mẽ và tính năng hiện đại. |
+| **Framework chính** | Spring Boot 4.0.6 | Cung cấp nền tảng ứng dụng nhanh chóng, tối giản cấu hình. |
+| **Tương tác Database** | Spring JDBC (Connection, PreparedStatement) | Viết các câu lệnh SQL thuần giúp kiểm soát tối đa hiệu năng và bảo mật SQL Injection. |
+| **Cơ sở dữ liệu** | MySQL Server 8.0+ | Lưu trữ dữ liệu an toàn và đáng tin cậy. |
+| **Giao diện (Frontend)** | Thymeleaf + HTML5 + Bootstrap 5 | Render giao diện động từ server-side, responsive mượt mà trên mọi thiết bị. |
+| **Bảo mật** | Spring Security 6 | Mã hóa mật khẩu bằng BCrypt, bảo vệ các endpoint hệ thống. |
+| **Quản lý build** | Maven | Quản lý toàn bộ vòng đời ứng dụng và các thư viện phụ thuộc. |
+
+---
+
+## 📂 Cấu Trúc Thư Mục Dự Án
+
+Thư mục dự án được tổ chức theo chuẩn kiến trúc MVC (Model-View-Controller) kết hợp mô hình Repository-Service:
+
+```text
+quanlybenhvien/
+├── src/main/java/com/hospital/quanlybenhvien/
+│   ├── config/
+│   │   ├── SecurityConfig.java         — Cấu hình xác thực Spring Security & phân quyền truy cập
+│   │   └── DataSeeder.java             — Tự động tạo dữ liệu tài khoản mẫu khi khởi động lần đầu
+│   ├── controller/
+│   │   ├── DashboardController.java    — Trang chủ, xử lý thống kê số liệu tổng quan hệ thống
+│   │   ├── UserController.java         — Điều hướng và CRUD tài khoản hệ thống (Chỉ dành cho Admin)
+│   │   ├── PatientController.java      — Điều hướng và CRUD bệnh nhân
+│   │   ├── DoctorController.java       — Điều hướng và CRUD bác sĩ
+│   │   └── AppointmentController.java  — Điều hướng và quản lý trạng thái lịch hẹn khám
+│   ├── service/
+│   │   ├── UserService.java            — Xử lý logic nghiệp vụ và mã hóa tài khoản người dùng
+│   │   ├── PatientService.java         — Xử lý logic nghiệp vụ bệnh nhân
+│   │   ├── DoctorService.java          — Xử lý logic nghiệp vụ bác sĩ
+│   │   └── AppointmentService.java     — Xử lý logic nghiệp vụ đặt lịch khám bệnh
+│   ├── repository/
+│   │   ├── UserRepository.java         — Thao tác SQL (JDBC) với bảng `users`
+│   │   ├── PatientRepository.java      — Thao tác SQL (JDBC) với bảng `patients`
+│   │   ├── DoctorRepository.java       — Thao tác SQL (JDBC) với bảng `doctors`
+│   │   └── AppointmentRepository.java  — Thao tác SQL (JDBC) kết nối (JOIN) bảng `appointments`
+│   └── model/
+│       ├── User.java                   — Model chứa thông tin tài khoản người dùng
+│       ├── Patient.java                — Model chứa thông tin bệnh nhân
+│       ├── Doctor.java                 — Model chứa thông tin bác sĩ
+│       └── Appointment.java            — Model chứa thông tin lịch khám bệnh
+│
+├── src/main/resources/
+│   ├── templates/
+│   │   ├── login.html                  — Giao diện đăng nhập hệ thống đẹp mắt
+│   │   ├── index.html                  — Giao diện Dashboard (Trang chủ chính)
+│   │   ├── users/
+│   │   │   ├── list.html               — Danh sách quản lý tài khoản người dùng
+│   │   │   └── form.html               — Form thêm / cập nhật tài khoản
+│   │   ├── patients/
+│   │   │   ├── list.html               — Danh sách quản lý hồ sơ bệnh nhân
+│   │   │   └── form.html               — Form thêm / cập nhật hồ sơ bệnh nhân
+│   │   ├── doctors/
+│   │   │   ├── list.html               — Danh sách quản lý bác sĩ
+│   │   │   └── form.html               — Form thêm / cập nhật thông tin bác sĩ
+│   │   └── appointments/
+│   │       ├── list.html               — Danh sách quản lý lịch hẹn khám bệnh
+│   │       └── form.html               — Form lên lịch khám bệnh mới
+│   └── application.properties          — Tệp cấu hình kết nối database, cổng chạy ứng dụng
+│
+└── pom.xml                             — Tệp quản lý thư viện Maven của dự án
 ```
 
-Sau đó mở IntelliJ IDEA → **Open** → chọn thư mục vừa clone về.
-
-> ⏳ Chờ IntelliJ tải dependencies Maven (lần đầu mất 2-5 phút, cần có mạng).
-
 ---
 
-## Bước 2 — Tạo database trong MySQL
+## ⚙️ Hướng Dẫn Cài Đặt Chi Tiết
 
-Mở **MySQL Workbench**, kết nối vào MySQL server của máy mình, rồi chạy đoạn SQL sau:
+Vui lòng làm theo các bước tuần tự dưới đây để cài đặt và khởi chạy dự án trên máy cá nhân:
+
+### Bước 1 — Chuẩn bị môi trường cài đặt
+Đảm bảo máy tính của bạn đã được cài đặt các công cụ sau:
+* **Java JDK 17** trở lên (Khuyến nghị dùng Eclipse Temurin).
+* **MySQL Server 8.0+** & **MySQL Workbench**.
+* **IntelliJ IDEA** (Bản Community hoặc Ultimate đều tốt) hoặc **Eclipse**.
+* **Git** (để clone và làm việc nhóm).
+
+### Bước 2 — Clone dự án về máy
+Mở Terminal / Git Bash và thực thi câu lệnh sau để tải mã nguồn:
+```bash
+git clone https://github.com/duy1sme/Hospital_Management_Java.git
+```
+Sau khi tải xong, hãy mở IntelliJ IDEA, nhấn **Open** và dẫn tới thư mục dự án vừa tải về. Đợi từ 2 đến 3 phút để hệ thống tải toàn bộ thư viện từ Maven.
+
+### Bước 3 — Tạo Cơ Sở Dữ Liệu MySQL
+Khởi động **MySQL Workbench**, đăng nhập bằng tài khoản admin của bạn và chạy đoạn script SQL dưới đây để tạo cơ sở dữ liệu và 4 bảng liên quan:
 
 ```sql
+-- Tạo Database hỗ trợ Unicode tiếng Việt đầy đủ
 CREATE DATABASE IF NOT EXISTS quanlybenhvien
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
 USE quanlybenhvien;
 
+-- 1. Bảng lưu trữ thông tin Tài khoản người dùng (users)
 CREATE TABLE IF NOT EXISTS users (
     id        INT AUTO_INCREMENT PRIMARY KEY,
     username  VARCHAR(50)  NOT NULL UNIQUE,
@@ -46,6 +144,17 @@ CREATE TABLE IF NOT EXISTS users (
     enabled   TINYINT(1)   NOT NULL DEFAULT 1
 );
 
+-- 2. Bảng lưu trữ thông tin Bác sĩ (doctors)
+CREATE TABLE IF NOT EXISTS doctors (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    full_name   VARCHAR(100) NOT NULL,
+    specialty   VARCHAR(100),
+    phone       VARCHAR(15),
+    email       VARCHAR(100),
+    active      TINYINT(1) DEFAULT 1
+);
+
+-- 3. Bảng lưu trữ thông tin Bệnh nhân (patients)
 CREATE TABLE IF NOT EXISTS patients (
     id               INT AUTO_INCREMENT PRIMARY KEY,
     full_name        VARCHAR(100) NOT NULL,
@@ -57,204 +166,103 @@ CREATE TABLE IF NOT EXISTS patients (
     created_at       DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS doctors (
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    full_name   VARCHAR(100) NOT NULL,
-    specialty   VARCHAR(100),
-    phone       VARCHAR(15),
-    email       VARCHAR(100),
-    active      TINYINT(1) DEFAULT 1
+-- 4. Bảng lưu trữ thông tin Lịch Hẹn khám bệnh (appointments)
+CREATE TABLE IF NOT EXISTS appointments (
+    id                INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id        INT NOT NULL,
+    doctor_id         INT NOT NULL,
+    appointment_date  DATE NOT NULL,
+    appointment_time  VARCHAR(10) NOT NULL,
+    status            VARCHAR(50) NOT NULL DEFAULT 'Chờ xác nhận',
+    note              TEXT,
+    created_at        DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
 );
 ```
 
-> ✅ Chạy xong sẽ thấy 3 bảng: **users**, **patients**, **doctors** xuất hiện trong Workbench.
-
----
-
-## Bước 3 — Sửa mật khẩu database
-
-Mở file:
-
-```
-src/main/resources/application.properties
-```
-
-Tìm dòng này và **đổi thành mật khẩu MySQL của máy bạn**:
-
+### Bước 4 — Cấu hình mật khẩu kết nối Database
+Mở tệp tin `src/main/resources/application.properties` trong IDE của bạn:
 ```properties
-spring.datasource.password=123456
+spring.datasource.username=root
+spring.datasource.password=duy31082006
 ```
+> ⚠️ **Lưu ý**: Hãy thay đổi giá trị của `spring.datasource.password` khớp với mật khẩu MySQL Server cục bộ trên máy của bạn.
 
-Ví dụ nếu máy bạn không đặt mật khẩu MySQL thì để trống:
+### Bước 5 — Khởi chạy ứng dụng
+1. Tìm tệp tin chính: `src/main/java/com/hospital/quanlybenhvien/QuanlybenhvienApplication.java`.
+2. Chuột phải vào tệp tin và chọn **Run 'QuanlybenhvienApplication.main()'** (hoặc nhấn tổ hợp phím `Shift + F10`).
+3. Chờ tới khi Console xuất hiện thông báo:
+   ```text
+   Started QuanlybenhvienApplication in X.XXX seconds
+   >>> Đã tạo tài khoản mặc định. Mật khẩu: 123456
+   ```
 
-```properties
-spring.datasource.password=
-```
-
-> ⚠️ Không commit file này lên GitHub sau khi sửa mật khẩu.
-> Thêm dòng sau vào file `.gitignore` nếu chưa có:
-> ```
-> src/main/resources/application.properties
-> ```
-
----
-
-## Bước 4 — Chạy ứng dụng
-
-Trong IntelliJ, mở file:
-
-```
-src/main/java/com/hospital/quanlybenhvien/QuanlybenhvienApplication.java
-```
-
-Bấm nút **▶ Run** (hoặc Shift+F10).
-
-Chờ đến khi console hiện dòng:
-
-```
-Started QuanlybenhvienApplication in X.XXX seconds
-```
-
-Và dòng:
-
-```
->>> Đã tạo tài khoản mặc định. Mật khẩu: 123456
-```
-
-> Dòng thứ hai chỉ hiện lần đầu chạy (khi bảng users còn trống).
-
----
-
-## Bước 5 — Mở trình duyệt
-
-Vào địa chỉ:
-
-```
+### Bước 6 — Truy cập hệ thống
+Mở trình duyệt web ưa thích của bạn (Chrome, Edge, Firefox) và truy cập địa chỉ:
+```text
 http://localhost:8080
 ```
+Sử dụng các tài khoản kiểm thử mặc định được tự động gieo sẵn trong hệ thống:
 
-Sẽ tự chuyển sang trang đăng nhập. Dùng tài khoản mặc định:
-
-| Tài khoản | Mật khẩu | Quyền |
-|---|---|---|
-| `admin` | `123456` | Quản trị — vào được tất cả |
-| `bacsi1` | `123456` | Bác sĩ — không vào được trang Admin |
-
----
-
-## Cấu trúc thư mục project
-
-```
-quanlybenhvien/
-├── src/main/java/com/hospital/quanlybenhvien/
-│   ├── config/
-│   │   ├── SecurityConfig.java      — cấu hình đăng nhập, phân quyền
-│   │   └── DataSeeder.java          — tự tạo tài khoản mặc định khi khởi động
-│   ├── controller/
-│   │   ├── HomeController.java      — trang chủ, trang login
-│   │   ├── PatientController.java   — CRUD bệnh nhân
-│   │   └── DoctorController.java    — CRUD bác sĩ
-│   ├── service/
-│   │   ├── PatientService.java      — xử lý logic bệnh nhân
-│   │   └── DoctorService.java       — xử lý logic bác sĩ
-│   ├── repository/
-│   │   ├── UserRepository.java      — truy vấn SQL bảng users
-│   │   ├── PatientRepository.java   — truy vấn SQL bảng patients
-│   │   └── DoctorRepository.java    — truy vấn SQL bảng doctors
-│   └── model/
-│       ├── User.java                — class chứa thông tin tài khoản
-│       ├── Patient.java             — class chứa thông tin bệnh nhân
-│       └── Doctor.java              — class chứa thông tin bác sĩ
-│
-├── src/main/resources/
-│   ├── templates/
-│   │   ├── login.html               — trang đăng nhập
-│   │   ├── index.html               — trang chủ
-│   │   ├── patients/
-│   │   │   ├── list.html            — danh sách bệnh nhân
-│   │   │   └── form.html            — form thêm/sửa bệnh nhân
-│   │   └── doctors/
-│   │       ├── list.html            — danh sách bác sĩ
-│   │       └── form.html            — form thêm/sửa bác sĩ
-│   └── application.properties       — cấu hình database, server
-│
-└── pom.xml                          — danh sách thư viện dùng trong project
-```
+| Tên Đăng Nhập | Mật Khẩu | Quyền Truy Cập (Role) | Chức Năng |
+| :--- | :--- | :--- | :--- |
+| `admin` | `123456` | **Quản Trị Viên (Admin)** | Xem Dashboard, Quản lý bệnh nhân, bác sĩ, lịch hẹn và quản lý tài khoản hệ thống |
+| `bacsi1` | `123456` | **Bác Sĩ (Doctor)** | Xem Dashboard, Quản lý bệnh nhân, bác sĩ, đặt lịch khám (không truy cập được Quản lý tài khoản) |
 
 ---
 
-## Quy tắc làm việc nhóm với Git
+## 🪵 Xử Lý Các Sự Cố Thường Gặp (Troubleshooting)
 
-### Lần đầu nhận việc
-
-```bash
-# Vào nhánh dev mới nhất
-git checkout dev
-git pull origin dev
-
-# Tạo nhánh riêng cho mình
-git checkout -b feature/ten-chuc-nang
-# Ví dụ: feature/patient-crud, feature/doctor-crud
-```
-
-### Làm xong 1 chức năng thì push lên
-
-```bash
-git add .
-git commit -m "feat: mô tả ngắn chức năng vừa làm"
-git push origin feature/ten-chuc-nang
-```
-
-### Tạo Pull Request trên GitHub
-
-Vào GitHub → **Pull requests** → **New pull request**
-- Base: `dev`
-- Compare: `feature/ten-chuc-nang`
-
-Báo trưởng nhóm review và merge.
-
-### Đồng bộ khi người khác merge xong
-
-```bash
-git checkout dev
-git pull origin dev
-git checkout feature/ten-chuc-nang
-git merge dev
-```
+* **Lỗi `Access denied for user 'root'@'localhost'`**:
+  * *Nguyên nhân*: Mật khẩu MySQL nhập vào cấu hình trong `application.properties` bị sai.
+  * *Cách sửa*: Sửa lại dòng `spring.datasource.password` cho đúng với mật khẩu máy tính của bạn và khởi động lại.
+* **Lỗi `Unknown database 'quanlybenhvien'`**:
+  * *Nguyên nhân*: Bạn chưa tạo cơ sở dữ liệu MySQL.
+  * *Cách sửa*: Hãy thực hiện đầy đủ câu lệnh tạo database ở **Bước 3** trong MySQL Workbench.
+* **Lỗi `Web server failed to start. Port 8080 was already in use.`**:
+  * *Nguyên nhân*: Cổng 8080 đang bị ứng dụng khác chiếm dụng (ví dụ Tomcat khác, Docker hoặc các dịch vụ hệ thống).
+  * *Cách sửa*: Mở tệp `application.properties` và thay đổi cổng bằng cách thêm cấu hình: `server.port=8081` (hoặc bất kỳ cổng trống nào khác).
+* **Lỗi Maven không tải được thư viện**:
+  * *Nguyên nhân*: Lỗi mạng hoặc IDE chưa nhận diện đúng Maven.
+  * *Cách sửa*: Click chuột phải vào dự án hoặc tệp `pom.xml` -> Chọn **Maven** -> Chọn **Reload Project**.
 
 ---
 
-## Xử lý lỗi thường gặp
+## 🤝 Quy Tắc Làm Việc Nhóm Với Git
 
-**Lỗi: `Access denied for user 'root'@'localhost'`**
-→ Sai mật khẩu MySQL. Kiểm tra lại `spring.datasource.password` trong `application.properties`.
+Để tránh xảy ra xung đột mã nguồn (Conflict), toàn bộ thành viên dự án nên tuân thủ quy trình Git sau:
 
-**Lỗi: `Unknown database 'quanlybenhvien'`**
-→ Chưa tạo database. Chạy lại đoạn SQL ở Bước 2.
-
-**Lỗi: `Port 8080 was already in use`**
-→ Đang có ứng dụng khác chạy cổng 8080. Tắt đi hoặc đổi cổng trong `application.properties`:
-```properties
-server.port=8081
-```
-
-**Lỗi: Maven không tải được thư viện**
-→ Kiểm tra mạng. Trong IntelliJ: chuột phải vào `pom.xml` → **Maven** → **Reload project**.
-
-**Đăng nhập xong vẫn ở trang login**
-→ Mở tab ẩn danh (Ctrl+Shift+N) thử lại. Nếu được thì browser đang cache session cũ.
-
----
-
-## Thông tin nhóm
-
-| Thành viên | Mã SV | Phụ trách |
-|---|---|---|
-| Nguyễn Văn A | SV001 | Trưởng nhóm, Security, CRUD User |
-| Nguyễn Văn B | SV002 | CRUD Bệnh nhân |
-| Nguyễn Văn C | SV003 | CRUD Bác sĩ |
-| Nguyễn Văn D | SV004 | Giao diện, Báo cáo |
+1. **Đồng bộ nhánh làm việc trước khi làm code mới**:
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+2. **Tạo nhánh tính năng riêng**:
+   ```bash
+   git checkout -b feature/ten-tinh-nang
+   # Ví dụ: feature/appointments-crud, feature/users-management
+   ```
+3. **Commit và đẩy thay đổi lên GitHub sau khi hoàn thiện**:
+   ```bash
+   git add .
+   git commit -m "feat: mô tả ngắn gọn chức năng vừa làm"
+   git push origin feature/ten-tinh-nang
+   ```
+4. **Tạo Pull Request (PR)** trên GitHub từ nhánh `feature/ten-tinh-nang` vào nhánh `main` để trưởng nhóm phê duyệt và đồng bộ.
 
 ---
 
-*Có vấn đề gì nhắn nhóm chat, không tự fix quá 30 phút.*
+## 👥 Bảng Phân Công Công Việc Nhóm
+
+| Thành Viên | Mã Sinh Viên | Vai Trò & Nhiệm Vụ Phụ Trách |
+| :--- | :--- | :--- |
+| **Nguyễn Văn A** | SV001 | Trưởng nhóm, Thiết lập kiến trúc, Bảo mật & Phân quyền (Spring Security), CRUD Tài khoản |
+| **Nguyễn Văn B** | SV002 | Thiết kế Cơ sở dữ liệu, Lập trình phân hệ CRUD Bệnh nhân, Tìm kiếm bệnh nhân |
+| **Nguyễn Văn C** | SV003 | Lập trình phân hệ CRUD Bác sĩ, Phân loại chuyên khoa & Theo dõi trạng thái |
+| **Nguyễn Văn D** | SV004 | Lập trình phân hệ Đặt lịch & Quản lý Lịch hẹn khám bệnh (Appointments), Đồng bộ trạng thái |
+| **Nguyễn Văn E** | SV005 | Thiết kế giao diện Thymeleaf + CSS/Bootstrap 5, Thiết lập Dashboard báo cáo số liệu |
+
+---
+
+*Chúc các thành viên hoàn thành xuất sắc dự án! Mọi vướng mắc kỹ thuật vui lòng trao đổi trực tiếp trên nhóm chat.*
