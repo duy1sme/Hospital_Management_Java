@@ -18,7 +18,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>🔑 Danh sách tài khoản</h4>
-        <a href="/admin/users/add" class="btn btn-success">+ Thêm tài khoản</a>
+        <div class="d-flex gap-2">
+            <a href="/" class="btn btn-outline-secondary btn-sm">⬅ Quay lại trang chủ</a>
+            <a href="/admin/users/add" class="btn btn-success">+ Thêm tài khoản</a>
+        </div>
     </div>
 
     <form class="row mb-3" method="get" th:action="@{/admin/users}">
@@ -69,7 +72,7 @@
         </tbody>
     </table>
 
-    <a href="/" class="btn btn-secondary">Quay lại trang chủ</a>
+
 </div>
 
 </body>
