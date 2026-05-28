@@ -1,7 +1,3 @@
-<!-- 
-  src/main/resources/templates/patients/list.html
-  - Chức năng: Trang giao diện hệ thống
--->
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
@@ -35,7 +31,6 @@
             </div>
         </div>
 
-        <!-- Tìm kiếm -->
         <form th:action="@{/patients}" method="get" class="mb-3">
             <div class="input-group">
                 <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên hoặc SĐT"
@@ -45,7 +40,6 @@
             </div>
         </form>
 
-        <!-- Bảng danh sách -->
         <table class="table table-bordered table-hover">
             <thead class="table-success">
                 <tr>

@@ -1,7 +1,3 @@
-<!-- 
-  src/main/resources/templates/appointments/list.html
-  - Chức năng: Trang giao diện hệ thống
--->
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
@@ -28,7 +24,6 @@
             </div>
         </div>
 
-        <!-- Tìm kiếm -->
         <form th:action="@{/appointments}" method="get" class="mb-3">
             <div class="input-group">
                 <input type="text" name="keyword" class="form-control"
@@ -38,7 +33,6 @@
             </div>
         </form>
 
-        <!-- Bảng danh sách -->
         <table class="table table-bordered table-hover">
             <thead class="table-warning">
                 <tr>
@@ -60,7 +54,7 @@
                     <td th:text="${a.appointmentDate}"></td>
                     <td th:text="${a.appointmentTime}"></td>
                     <td>
-                        <!-- Màu badge theo trạng thái -->
+
                         <span th:if="${a.status == 'Chờ xác nhận'}" class="badge bg-warning text-dark"
                             th:text="${a.status}"></span>
                         <span th:if="${a.status == 'Đã xác nhận'}" class="badge bg-primary"
@@ -70,7 +64,7 @@
                     </td>
                     <td th:text="${a.note}"></td>
                     <td>
-                        <!-- Nút đổi trạng thái -->
+
                         <form th:action="@{/appointments/status/{id}(id=${a.id})}" method="post" class="d-inline">
                             <select name="status" class="form-select form-select-sm d-inline w-auto"
                                 onchange="this.form.submit()">

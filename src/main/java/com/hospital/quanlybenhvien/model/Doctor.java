@@ -1,20 +1,16 @@
 package com.hospital.quanlybenhvien.model;
 
-// Doctor.java
-// - Chức năng: Đại diện cho thông tin bác sĩ
 public class Doctor {
 
-    private int id;              // Mã số bác sĩ (Primary Key)
-    private String fullName;     // Họ tên đầy đủ
-    private String specialty;    // Chuyên khoa (ví dụ: Ngoại khoa, Tim mạch, ...)
-    private String phone;        // Số điện thoại liên hệ
-    private String email;        // Địa chỉ email
-    private boolean active;      // Trạng thái: true=đang làm việc, false=nghỉ làm
+    private int id;
+    private String fullName;
+    private String specialty;
+    private String phone;
+    private String email;
+    private boolean active;
 
-    // Constructor không tham số
     public Doctor() {}
 
-    // ===== GETTERS VÀ SETTERS =====
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -30,6 +26,6 @@ public class Doctor {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
-    public boolean isActive() { return active; } // Kiểm tra bác sĩ có đang làm việc không
-    public void setActive(boolean active) { this.active = active; } // Cập nhật trạng thái làm việc
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

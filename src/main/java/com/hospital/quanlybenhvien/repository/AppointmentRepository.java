@@ -8,12 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// AppointmentRepository - Lớp truy cập dữ liệu cho bảng appointments
-// Quản lý các thao tác với lịch hẹn khám bệnh
-// Sử dụng JOIN để lấy tên bệnh nhân và bác sĩ từ các bảng khác
 @Repository
-// AppointmentRepository.java
-// - Chức năng: Thao tác cơ sở dữ liệu (CRUD) bảng appointments qua JDBC
+
 public class AppointmentRepository {
 
     private final DataSource dataSource;
@@ -22,15 +18,13 @@ public class AppointmentRepository {
         this.dataSource = dataSource;
     }
 
-    // Chuyển đổi dòng ResultSet (với JOIN) thành object Appointment
-// ResultSet bao gồm dữ liệu từ 3 bảng: appointments, patients, doctors
     private Appointment mapRow(ResultSet rs) throws SQLException {
         Appointment a = new Appointment();
         a.setId(rs.getInt("id"));
         a.setPatientId(rs.getInt("patient_id"));
-        a.setPatientName(rs.getString("patient_name"));    // Từ JOIN
+        a.setPatientName(rs.getString("patient_name"));
         a.setDoctorId(rs.getInt("doctor_id"));
-        a.setDoctorName(rs.getString("doctor_name"));      // Từ JOIN
+        a.setDoctorName(rs.getString("doctor_name"));
         a.setAppointmentDate(rs.getString("appointment_date"));
         a.setAppointmentTime(rs.getString("appointment_time"));
         a.setStatus(rs.getString("status"));
@@ -39,12 +33,9 @@ public class AppointmentRepository {
         return a;
     }
 
-    // Lấy tất cả lịch hẹn
-// Sử dụng JOIN để lấy tên bệnh nhân từ bảng patients
-// và tên bác sĩ từ bảng doctors
     public List<Appointment> findAll() {
         List<Appointment> list = new ArrayList<>();
-        // Multi-line SQL query (text block)
+
         String sql = """
                 SELECT a.*,
                        p.full_name AS patient_name,
@@ -54,7 +45,6 @@ public class AppointmentRepository {
                 JOIN doctors  d ON a.doctor_id  = d.id
                 ORDER BY a.appointment_date DESC, a.appointment_time DESC
                 """;
-        // Sắp xếp theo ngày và giờ gần nhất trước
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -68,8 +58,6 @@ public class AppointmentRepository {
         return list;
     }
 
-    // Tìm lịch hẹn theo ID
-// Cũng sử dụng JOIN để lấy tên bệnh nhân và bác sĩ
     public Appointment findById(int id) {
         String sql = """
                 SELECT a.*,
@@ -94,9 +82,6 @@ public class AppointmentRepository {
         return null;
     }
 
-    // Đếm lịch hẹn hôm nay
-// CURDATE(): hàm MySQL lấy ngày hôm nay
-// Dùng cho dashboard để hiển thị số lịch hẹn trong ngày
     public int countToday() {
         String sql = "SELECT COUNT(*) FROM appointments WHERE appointment_date = CURDATE()";
 
@@ -112,8 +97,6 @@ public class AppointmentRepository {
         return 0;
     }
 
-    // Tìm kiếm lịch hẹn theo từ khóa
-// Tìm theo tên bệnh nhân hoặc trạng thái
     public List<Appointment> search(String keyword) {
         List<Appointment> list = new ArrayList<>();
         String sql = """
@@ -131,8 +114,8 @@ public class AppointmentRepository {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             String kw = "%" + keyword + "%";
-            ps.setString(1, kw);  // Tìm theo tên bệnh nhân
-            ps.setString(2, kw);  // Tìm theo trạng thái
+            ps.setString(1, kw);
+            ps.setString(2, kw);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(mapRow(rs));
 
@@ -142,8 +125,6 @@ public class AppointmentRepository {
         return list;
     }
 
-    // Thêm lịch hẹn mới
-// Trạng thái mặc định là "Chờ xác nhận"
     public void save(Appointment a) {
         String sql = "INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, status, note) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -155,7 +136,7 @@ public class AppointmentRepository {
             ps.setObject(2, a.getDoctorId());
             ps.setString(3, a.getAppointmentDate());
             ps.setString(4, a.getAppointmentTime());
-            ps.setString(5, "Chờ xác nhận"); // mặc định khi tạo mới
+            ps.setString(5, "Chờ xác nhận");
             ps.setString(6, a.getNote());
             ps.executeUpdate();
 
@@ -164,16 +145,14 @@ public class AppointmentRepository {
         }
     }
 
-    // Cập nhật trạng thái lịch hẹn
-// Trạng thái có thể: Chờ xác nhận, Đã xác nhận, Hoàn thành, Đã hủy
     public void updateStatus(int id, String status) {
         String sql = "UPDATE appointments SET status = ? WHERE id = ?";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, status);  // Trạng thái mới
-            ps.setInt(2, id);         // Lịch hẹn nào
+            ps.setString(1, status);
+            ps.setInt(2, id);
             ps.executeUpdate();
 
         } catch (SQLException e) {
@@ -181,7 +160,6 @@ public class AppointmentRepository {
         }
     }
 
-    // Xóa lịch hẹn theo ID
     public void delete(int id) {
         String sql = "DELETE FROM appointments WHERE id = ?";
 

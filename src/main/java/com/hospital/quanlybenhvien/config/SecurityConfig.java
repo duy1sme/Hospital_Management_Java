@@ -17,8 +17,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-// SecurityConfig.java
-// - Chức năng: Cấu hình bảo mật và phân quyền truy cập URL
+
 public class SecurityConfig {
 
     private final UserRepository userRepository;
@@ -52,20 +51,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Tắt CSRF cho đơn giản (project học tập)
+
                 .csrf(csrf -> csrf.disable())
 
-                // Phân quyền truy cập
                 .authorizeHttpRequests(auth -> auth
-                        // Cho phép truy cập trang login không cần đăng nhập
+
                         .requestMatchers("/login").permitAll()
-                        // Trang admin chỉ ADMIN mới vào được
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // Tất cả trang khác phải đăng nhập
+
                         .anyRequest().authenticated()
                 )
 
-                // Cấu hình trang đăng nhập
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
@@ -73,12 +70,11 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                // Cấu hình đăng xuất
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)   // xóa session
-                        .deleteCookies("JSESSIONID")   // xóa cookie
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
 

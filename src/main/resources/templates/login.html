@@ -1,7 +1,3 @@
-<!-- 
-  src/main/resources/templates/login.html
-  - Chức năng: Trang đăng nhập hệ thống
--->
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -20,12 +16,10 @@
 
                     <h4 class="text-center mb-4">🏥 Quản Lý Bệnh Viện</h4>
 
-                    <!-- Đăng nhập sai -->
                     <div th:if="${param.error}" class="alert alert-danger">
                         Sai tên đăng nhập hoặc mật khẩu!
                     </div>
 
-                    <!-- Đăng xuất thành công -->
                     <div th:if="${param.logout}" class="alert alert-success">
                         Đã đăng xuất thành công!
                     </div>

@@ -1,7 +1,3 @@
-<!-- 
-  src/main/resources/templates/doctors/form.html
-  - Chức năng: Trang giao diện hệ thống
--->
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
@@ -36,7 +32,6 @@
                         <form th:action="${doctor.id == 0 ? '/doctors/add' : '/doctors/edit'}" th:object="${doctor}"
                             method="post">
 
-                            <!-- Trường ẩn lưu ID nếu là sửa -->
                             <input type="hidden" th:field="*{id}">
 
                             <div class="mb-3">

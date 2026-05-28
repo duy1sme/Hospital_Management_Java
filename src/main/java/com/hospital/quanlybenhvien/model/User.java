@@ -1,22 +1,16 @@
 package com.hospital.quanlybenhvien.model;
 
-// User.java
-// - Chức năng: Đại diện cho thông tin tài khoản người dùng
 public class User {
 
-    private int id;              // Mã số tài khoản (Primary Key)
-    private String username;     // Tên đăng nhập (dùng khi login)
-    private String password;     // Mật khẩu đã mã hóa (không lưu plaintext)
-    private String fullName;     // Họ tên đầy đủ của người dùng
-    private String role;         // Quyền hạn: ROLE_ADMIN (quản trị) hoặc ROLE_DOCTOR (bác sĩ)
-    private boolean enabled;     // Trạng thái: true=hoạt động, false=bị khóa
+    private int id;
+    private String username;
+    private String password;
+    private String fullName;
+    private String role;
+    private boolean enabled;
 
-    // Constructor không tham số (no-arg constructor)
-    // Dùng khi Spring Data JPA hoặc Thymeleaf khởi tạo object từ database hoặc form
     public User() {}
 
-    // ===== GETTERS VÀ SETTERS =====
-    // Getter: phương thức lấy giá trị | Setter: phương thức gán giá trị
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -32,7 +26,6 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    // Dùng "is" thay vì "get" cho boolean
     public boolean isEnabled() { return enabled; }
     public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }
