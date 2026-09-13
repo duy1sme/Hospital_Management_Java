@@ -1,4 +1,6 @@
 # 🏥 Hospital Management — Hệ Thống Quản Lý Bệnh Viện
+# Thành viên đóng góp
+Huy Phạm – Phát triển và hoàn thiện chức năng CRUD quản lý bệnh nhân.
 
 Chào mừng bạn đến với **Hệ Thống Quản Lý Bệnh Viện (Hospital Management)**. Đây là một ứng dụng web hoàn chỉnh, được xây dựng trên nền tảng **Spring Boot** và sử dụng cơ sở dữ liệu MySQL đảm bảo hiệu năng mạnh mẽ cũng như giao diện thân thiện.
 
